@@ -12,7 +12,6 @@ train_data_folder=$3
 dev_data_folder=$4
 test_data_folder=$5
 
-
 # en-fr train
 
 echo "*** train ***"
@@ -54,6 +53,7 @@ done
 
 echo "*** dev ***"
 
+
 for lang in  "de-en" "en-fr" "en-de" "es-en"; do
     echo $lang
 
@@ -68,7 +68,6 @@ for lang in  "de-en" "en-fr" "en-de" "es-en"; do
 
     paste -d"\t" $raw_data_folder/TEDdev.$lang.data $raw_data_folder/TEDdev.$idfile.doc-ids > $dev_data/TEDdev.$lang.data.withids
     
-
 done
 
 
@@ -82,7 +81,6 @@ for lang in "de-en" "en-fr" "en-de" "es-en"; do
 	[ -d $test_data_folder/$lang ] || mkdir $test_data_folder/$lang
 
     zcat $raw_test_data_folder/$lang/WMT2016.$lang.data.final.gz | paste -d"\t" - $raw_test_data_folder/$lang/WMT2016.$lang.doc-ids | cut -f 1-6 > $test_data/WMT2016.$lang.data.final.withids
-    
 
 done
 
