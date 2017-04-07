@@ -59,6 +59,10 @@ for lang in  "de-en" "en-fr" "en-de" "es-en"; do
 
 	[ -d $dev_data_folder/$lang ] || mkdir $dev_data_folder/$lang
 
+    if [ "$lang" = "es-en" ] ; then
+        idfile="es-en"
+    fi
+	
     if [ "$lang" = "en-fr" ] || [ "$lang" = "fr-en" ]; then
             idfile="en-fr"
         fi
@@ -66,7 +70,7 @@ for lang in  "de-en" "en-fr" "en-de" "es-en"; do
             idfile="de-en"
     fi
 
-    paste -d"\t" $raw_data_folder/TEDdev.$lang.data $raw_data_folder/TEDdev.$idfile.doc-ids > $dev_data/TEDdev.$lang.data.withids
+    paste -d"\t" $raw_data_folder/$lang/TEDdev.$lang.data $raw_data_folder/$idfile/TEDdev.$idfile.doc-ids > $dev_data_folder/$lang/TEDdev.$lang.data.withids
     
 done
 
