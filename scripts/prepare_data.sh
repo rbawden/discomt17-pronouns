@@ -36,11 +36,11 @@ for lang in "de-en" "en-fr" "en-de" "es-en" ; do
         idfile="de-en"
     fi
 
-    paste -d"\t" $raw_data_folder/$lang/Europarl.$lang.data$filtered $raw_data_folder/$lang/Europarl.$idfile.doc-ids | cut -f 1-6 > $train_data_folder/$lang/Europarl.$lang.data$filtered.withids
-    paste -d"\t" $raw_data_folder/$lang/IWSLT15.$lang.data$filtered $raw_data_folder/$lang/IWSLT15.$idfile.doc-ids > $train_data_folder/$lang/IWSLT15.$lang.data$filtered.withids
+    paste -d"\t" $raw_data_folder/$lang/Europarl.$lang.data$filtered $raw_data_folder/$idfile/Europarl.$idfile.doc-ids | cut -f 1-6 > $train_data_folder/$lang/Europarl.$lang.data$filtered.withids
+    paste -d"\t" $raw_data_folder/$lang/IWSLT15.$lang.data$filtered $raw_data_folder/$idfile/IWSLT15.$idfile.doc-ids > $train_data_folder/$lang/IWSLT15.$lang.data$filtered.withids
 	if [ "$lang" != "es-en" ]
     then
-		paste -d"\t" $raw_data_folder/$lang/NCv9.$lang.data$filtered $raw_data_folder/$lang/NCv9.$idfile.doc-ids | cut -f 1-6 > $train_data_folder/$lang/NCv9.$lang.data$filtered.withids
+		paste -d"\t" $raw_data_folder/$lang/NCv9.$lang.data$filtered $raw_data_folder/$idfile/NCv9.$idfile.doc-ids | cut -f 1-6 > $train_data_folder/$lang/NCv9.$lang.data$filtered.withids
 	fi
 
 	if [ "$lang" = "es-en" ]
