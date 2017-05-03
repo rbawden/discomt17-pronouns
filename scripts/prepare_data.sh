@@ -23,9 +23,13 @@ for lang in "de-en" "en-fr" "en-de" "es-en" ; do
 
     if [ "$lang" = "es-en" ] ; then
         idfile="es-en"
+		filtered=""
+	else
+		filtered=".filtered"
     fi
+	
 
-    if [ "$lang" = "en-fr" ] || [ "$lang" = "fr-en" ]; then
+    if [ "$lang" = "en-fr" ] ; then
         idfile="en-fr"
     fi
 
@@ -33,11 +37,11 @@ for lang in "de-en" "en-fr" "en-de" "es-en" ; do
         idfile="de-en"
     fi
 
-    paste -d"\t" $raw_data_folder/$lang/Europarl.$lang.data $raw_data_folder/$lang/Europarl.$idfile.doc-ids | cut -f 1-6 > $train_data_folder/$lang/Europarl.$lang.data.withids
-    paste -d"\t" $raw_data_folder/$lang/IWSLT15.$lang.data $raw_data_folder/$lang/IWSLT15.$idfile.doc-ids > $train_data_folder/$lang/IWSLT15.$lang.data.withids
+    paste -d"\t" $raw_data_folder/$lang/Europarl.$lang.data$filtered $raw_data_folder/$lang/Europarl.$idfile.doc-ids | cut -f 1-6 > $train_data_folder/$lang/Europarl.$lang.data$filtered.withids
+    paste -d"\t" $raw_data_folder/$lang/IWSLT15.$lang.data$filtered $raw_data_folder/$lang/IWSLT15.$idfile.doc-ids > $train_data_folder/$lang/IWSLT15.$lang.data$filtered.withids
 	if [ "$lang" != "es-en" ]
     then
-		paste -d"\t" $raw_data_folder/$lang/NCv9.$lang.data $raw_data_folder/$lang/NCv9.$idfile.doc-ids | cut -f 1-6 > $train_data_folder/$lang/NCv9.$lang.data.withids
+		paste -d"\t" $raw_data_folder/$lang/NCv9.$lang.data$filtered $raw_data_folder/$lang/NCv9.$idfile.doc-ids | cut -f 1-6 > $train_data_folder/$lang/NCv9.$lang.data$filtered.withids
 	fi
 
 	if [ "$lang" = "es-en" ]
@@ -61,6 +65,9 @@ for lang in  "de-en" "en-fr" "en-de" "es-en"; do
 
     if [ "$lang" = "es-en" ] ; then
         idfile="es-en"
+		filtered=""
+	else
+		filtered=".filtered"
     fi
 	
     if [ "$lang" = "en-fr" ] || [ "$lang" = "fr-en" ]; then
@@ -70,7 +77,7 @@ for lang in  "de-en" "en-fr" "en-de" "es-en"; do
             idfile="de-en"
     fi
 
-    paste -d"\t" $raw_data_folder/$lang/TEDdev.$lang.data $raw_data_folder/$idfile/TEDdev.$idfile.doc-ids > $dev_data_folder/$lang/TEDdev.$lang.data.withids
+    paste -d"\t" $raw_data_folder/$lang/TEDdev.$lang.data$filtered $raw_data_folder/$idfile/TEDdev.$idfile.doc-ids > $dev_data_folder/$lang/TEDdev.$lang.data$filtered.withids
     
 done
 
@@ -82,9 +89,15 @@ echo "*** test ***"
 for lang in "de-en" "en-fr" "en-de" "es-en"; do
     echo $lang
 
+	if [ "$lang" = "es-en" ] ; then
+		filtered=""
+	else
+		filtered=".filtered"
+    fi
+
 	[ -d $test_data_folder/$lang ] || mkdir $test_data_folder/$lang
 
-    zcat $raw_test_data_folder/$lang/WMT2016.$lang.data.final.gz | paste -d"\t" - $raw_test_data_folder/$lang/WMT2016.$lang.doc-ids | cut -f 1-6 > $test_data/WMT2016.$lang.data.final.withids
+    zcat $raw_test_data_folder/$lang/WMT2016.$lang.data$filtered.final.gz | paste -d"\t" - $raw_test_data_folder/$lang/WMT2016.$lang.doc-ids | cut -f 1-6 > $test_data/WMT2016.$lang.data$filtered.final.withids
 
 done
 
