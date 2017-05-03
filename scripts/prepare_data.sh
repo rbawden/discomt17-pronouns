@@ -21,11 +21,10 @@ for lang in "de-en" "en-fr" "en-de" "es-en" ; do
 
 	[ -d $train_data_folder/$lang ] || mkdir $train_data_folder/$lang
 
+	filtered=".filtered"
     if [ "$lang" = "es-en" ] ; then
         idfile="es-en"
 		filtered=""
-	else
-		filtered=".filtered"
     fi
 	
 
