@@ -46,9 +46,9 @@ for lang in "de-en" "en-fr" "en-de" "es-en" ; do
 
 	if [ "$lang" = "es-en" ]
 	then
-		cat $train_data_folder/$lang/Europarl.$lang.data.withids $train_data_folder/$lang/IWSLT15.$lang.data.withids train_data/NCv9.$lang.data.withids > $train_data_folder/$lang/all.$lang.withids
+		cat $train_data_folder/$lang/Europarl.$lang.data$filtered.withids $train_data_folder/$lang/IWSLT15.$lang.data.withids train_data/NCv9.$lang.data.withids > $train_data_folder/$lang/all.$lang.withids
 	else
-		cat $train_data_folder/$lang/Europarl.$lang.data.withids $train_data_folder/$lang/IWSLT15.$lang.data.withids > $train_data_folder/$lang/all.$lang.withids
+		cat $train_data_folder/$lang/Europarl.$lang.data$filtered.withids $train_data_folder/$lang/IWSLT15.$lang.data.withids > $train_data_folder/$lang/all.$lang.withids
 	fi
 
 done 
