@@ -11,6 +11,6 @@ Cf. the article presenting their system description:
 
 
 # TODO May 3rd
-* HM: Train 2 dep parsing models for each language out of EN, FR, DE and ES, namely one form model and one lemma model.
+* HM: Train 2 dep parsing models for each language out of EN, FR, DE and ES, namely one form model and one lemma model. Note these models also require a POS model. 
 * HM: Generate a file, aligned to the input. It will contain four columms: SOURCE_form_depidx SOURCE_form_label TARGET_lemma_depidx TARGET_lemma_label
 * HM: Note that the TARGET side has REPLACE_n tokens that are always subject pronouns. One must give them an automatic PRONOUN tag before parsing, as well as a special replace_label label to keep track. Normally they can be treated as subjects.
