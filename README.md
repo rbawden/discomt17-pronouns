@@ -15,3 +15,7 @@ Cf. the article presenting their system description:
 * HM: Generate a file, aligned to the input. It will contain four columms: SOURCE_form_depidx SOURCE_form_label TARGET_lemma_depidx TARGET_lemma_label
 * HM: Note that the TARGET side has REPLACE_n tokens that are always subject pronouns. One must give them an automatic PRONOUN tag before parsing, as well as a special replace_label label to keep track. Normally they can be treated as subjects.
 
+* RB: put data on cluster
+* RB: test keras on cluster
+* RB: get morphological information from lexica for both source and target sentences. Getting the morph info for target sentences requires mapping the PoS provided to the PoS in the lexicon.
+* RB: finish adapting code to take generic features
