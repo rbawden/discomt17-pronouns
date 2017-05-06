@@ -31,6 +31,38 @@ def map_pos_de(pos):
             "VERB": "(V|MOD|AUX|PP)",
             "X": "(FN|ITJ|PTKA|PTKANT|PTKNEG|PTKVZ|PTKZU)"}.get(pos, pos) # return pos as default
 
+def map_pos_en(pos):
+    return {".": "(parentf|parento|poncts|ponctw|epsilon)",
+            "ADJ": "(A|adjPref|adjSuff|R)",
+            "ADP": "(A|R|S)",
+            "ADV": "(adv|advPref|R|S)",
+            "CONJ": "C",
+            "DET": "(det|D)",
+            "NOUN": "(nc?|np|N|P)",
+            "NUM": "CARD",
+            "PRON": "pro",
+            "PRT": "(PTKA|PTKANT|S)",
+            "VERB": "(V|MOD|AUX|PP)",
+            "X": "I"}.get(pos, pos) # return pos as default
+
+def map_pos_fr(pos):
+    return {".": "(parentf|parento|poncts|ponctw)",
+            "ABR": "(np|nc)",
+            "ADJ": "(adj|adjPref)",
+            "ADV": "(adv|pri|pres|csu|advneg|advPred)",
+            "KON": "(coo|que_restr|que|csu)",
+            "DET": "det",
+            "INT": "(pres|nc)", 
+            "NAM": "np",
+            "NOM": "nc",
+            "NUM": "CARD",
+            "PRON": "(cl(a|ar|d|dr|g|l|n|neg|r)|que|pro|pri|prel|ilimp|ce|caimp)",
+            "PRP": "prep",
+            "PUN": "(poncts|ponctw|epsilon)",
+            "VER": "(v|auxAvoir|auxEtre)",
+            "SYM":  "(poncts|ponctw|epsilon)"
+            }.get(pos, pos) # return pos as default
+
 def map_pos(lang):
     if lang=="de": return map_pos_de
     elif lang=="fr": exit("raah")
@@ -50,18 +82,17 @@ def parse_morph(morph):
         elif el in ["long", "short", "short_sg", "short_pl"]: dictmorph["longshort"] = el
         elif el in ["plain", "noagr", "primary", "secondary"]: continue
         elif el in ["super"]: dictmorph["compar"] = el
+        elif el in ["imp"]: dictmorph["imp"] = el
         else:
-            print(morph)
-            print("*"+el+"*")
-            input()
+            continue
     return dictmorph
         
-def get_morph_from_lexicon(entry, constrainpos = [".*"],
+def get_morph_from_lexicon(entry, constrainpos = "[.*]",
                            keep = ["tense", "gender", "number", "case", "person", "mood", "pos"]):
     posmorph = {"pos":set([])}
     for pos in entry:
         posmorph["pos"].add(pos)
-        if not re.match("^"+constrainpos+"$", pos): continue
+        if not re.match("^("+"|".join(constrainpos)+")$", pos): continue
         for morph in entry[pos]:
             dictmorph = parse_morph(morph)
             for info in keep:
@@ -70,38 +101,41 @@ def get_morph_from_lexicon(entry, constrainpos = [".*"],
                     posmorph[info].add(dictmorph[info])
                     
 
+    # print("**** posmorph", posmorph)
     return ".".join(["-".join(sorted(list(posmorph[x]))) for x in sorted(posmorph)])
 
 def get_fine_pos(fname, colnum, lexicon, lang, wordpos=False):
     posmap = map_pos(lang)
 
     # decide what morphinfo to keep 
-    keep = ["gender", "person", "number", "tense", "pos"]
+    keep = ["gender", "person", "number", "pos"]
     
-    with open(fname, "r", encoding="utf-8") as fp:
+    if ".gz" in fname: fp = gzip.open(fname, "rt", encoding="utf-8")
+    else: fp = open(fname, "r", encoding="utf-8")
+
+    for line in fp:
         l=0
-        for line in fp:
-            for word in line.strip("\n").split("\t")[colnum-1].split(" "):
+        for word in line.strip("\n").split("\t")[colnum-1].split(" "):
 
-                # get pos and word
-                pos, finepos = [".*?"], "NA"
-                if wordpos:
-                    if "|" in word:
-                        word, pos = word.split("|")
-                        pos = posmap(pos)
+            # get pos and word
+            pos, finepos = [".*?"], "NA"
+            if wordpos:
+                if "|" in word:
+                    word, pos = word.split("|")
+                    pos = posmap(pos)
                     
-                # if word not recognised, just send old POS (if present)
-                if word not in lexicon:
-                    continue
+            # if word not recognised, just send old POS (if present)
+            if word not in lexicon:
+                continue
 
-                # otherwise, look up in the lexicon
-                finepos = get_morph_from_lexicon(lexicon[word], pos, keep)
-                if finepos=="": finepos="."
+            # otherwise, look up in the lexicon
+            finepos = get_morph_from_lexicon(lexicon[word], pos, keep)
+            if finepos=="": finepos="."
 
-                if l>0:os.sys.stdout.write(" ")
-                l+=1
-                os.sys.stdout.write(finepos)
-            os.sys.stdout.write("\n")
+            if l>0:os.sys.stdout.write(" ")
+            l+=1
+            os.sys.stdout.write(finepos)
+        os.sys.stdout.write("\n")
            
                 
 
@@ -110,7 +144,7 @@ if __name__=="__main__":
     argparser = argparse.ArgumentParser()
     argparser.add_argument("data_fname", help="data file")
     argparser.add_argument("lang", choices=["en", "es", "de", "fr"])
-    argparser.add_argument("column_number", type=int, help="column number of which to get POS")
+    argparser.add_argument("column_number", type=int, help="column number of which to get POS (from 1)")
     argparser.add_argument("mlex", help="mlex lexicon") # form, token, lemma
     argparser.add_argument("-p", "--pos", help="POS also available", action="store_true", default=False)
     args = argparser.parse_args()
