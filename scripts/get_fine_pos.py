@@ -56,7 +56,7 @@ def map_pos_fr(pos):
             "NAM": "np",
             "NOM": "nc",
             "NUM": "CARD",
-            "PRON": "(cl(a|ar|d|dr|g|l|n|neg|r)|que|pro|pri|prel|ilimp|ce|caimp)",
+            "PRON": "(cla|clar|cld|cldr|clg|cll|cln|clneg|clr|que|pro|pri|prel|ilimp|ce|caimp)",
             "PRP": "prep",
             "PUN": "(poncts|ponctw|epsilon)",
             "VER": "(v|auxAvoir|auxEtre)",
@@ -65,9 +65,9 @@ def map_pos_fr(pos):
 
 def map_pos(lang):
     if lang=="de": return map_pos_de
-    elif lang=="fr": exit("raah")
-    elif lang=="es": exit("raah")
-    elif lang=="en": exit("raah")
+    elif lang=="fr": return map_pos_fr
+    elif lang=="es": return map_pos_es
+    elif lang=="en": return map_pos_en
     
 
 def parse_morph(morph):
@@ -87,12 +87,12 @@ def parse_morph(morph):
             continue
     return dictmorph
         
-def get_morph_from_lexicon(entry, constrainpos = "[.*]",
+def get_morph_from_lexicon(entry, constrainpos = ".*",
                            keep = ["tense", "gender", "number", "case", "person", "mood", "pos"]):
     posmorph = {"pos":set([])}
     for pos in entry:
         posmorph["pos"].add(pos)
-        if not re.match("^("+"|".join(constrainpos)+")$", pos): continue
+        if not re.match("^"+constrainpos+"$", pos): continue
         for morph in entry[pos]:
             dictmorph = parse_morph(morph)
             for info in keep:
