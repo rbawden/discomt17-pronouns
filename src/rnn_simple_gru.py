@@ -107,6 +107,7 @@ if __name__=="__main__":
     argparser = argparse.ArgumentParser()
     argparser.add_argument("train", help="training data file")
     argparser.add_argument("dev", help="dev data file")
+    argparser.add_argument("modelname", help="model name")
     argparser.add_argument("-s", "--stacked", action="store_true", default=False)
     argparser.add_argument("-f", "--force_rebuild", action="store_true", default=False)
     args = argparser.parse_args()
@@ -363,7 +364,7 @@ if __name__=="__main__":
     model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
     
     index2label = {v:k for k,v in vs.label.items()}
-    evalcb = CustomCallback(dev_data[0], dev_data[1], index2label, 'model_stacked_' + str(stacked))
+    evalcb = CustomCallback(dev_data[0], dev_data[1], index2label, args.modelname)
     savecb = ModelCheckpoint(u"rnn_model_gru.model", monitor='val_acc', verbose=1, save_best_only=True, mode='auto')
     #import pdb;pdb.set_trace()
     
