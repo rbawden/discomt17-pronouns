@@ -115,7 +115,7 @@ def get_fine_pos(fname, colnum, lexicon, lang, wordpos=False):
 
     for line in fp:
         l=0
-        print(line)
+        print(line.strip("\n").split("\t")[colnum-1].split(" "))
         for word in line.strip("\n").split("\t")[colnum-1].split(" "):
 
             # get pos and word
