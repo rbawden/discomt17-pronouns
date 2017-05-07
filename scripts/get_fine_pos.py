@@ -135,7 +135,7 @@ def get_fine_pos(fname, colnum, lexicon, lang, wordpos=False):
 
             if l>0:os.sys.stdout.write(" ")
             l+=1
-            os.sys.stdout.write(finepos)
+            os.sys.stdout.write("*"+finepos+"*")
         os.sys.stdout.write("\n")
         input()
            
