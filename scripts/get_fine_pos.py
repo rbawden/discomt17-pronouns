@@ -102,42 +102,43 @@ def get_morph_from_lexicon(entry, constrainpos = ".*",
                     
 
     # print("**** posmorph", posmorph)
-    return ".".join(["-".join(sorted(list(posmorph[x]))) for x in sorted(posmorph)])
+    return ".".join(["-".join(sorted(list(posmorph[x]))) for x in sorted(posmorph) if x in keep])
 
 def get_fine_pos(fname, colnum, lexicon, lang, wordpos=False):
     posmap = map_pos(lang)
 
     # decide what morphinfo to keep 
-    keep = ["gender", "person", "number", "pos"]
+    keep = ["gender", "person", "number"]
     
     if ".gz" in fname: fp = gzip.open(fname, "rt", encoding="utf-8")
     else: fp = open(fname, "r", encoding="utf-8")
 
     for line in fp:
         l=0
-        print(line.strip("\n").split("\t")[colnum-1].split(" "))
-        for word in line.strip("\n").split("\t")[colnum-1].split(" "):
 
+        for word in line.strip("\n").split("\t")[colnum-1].split(" "):
             # get pos and word
-            pos, finepos = [".*?"], "NA"
+            pos, finepos = "", "NA"
             if wordpos:
                 if "|" in word:
                     word, pos = word.split("|")
-                    pos = posmap(pos)
+                    newpos = posmap(pos)
+                else:
+                    pos = "PRO-subj"
                     
             # if word not recognised, just send old POS (if present)
             if word not in lexicon:
-                continue
-
-            # otherwise, look up in the lexicon
-            finepos = get_morph_from_lexicon(lexicon[word], pos, keep)
-            if finepos=="": finepos="."
-
+                if wordpos: finepos = ""
+                else: finepos="NA"
+            else:
+                # otherwise, look up in the lexicon
+                finepos = get_morph_from_lexicon(lexicon[word], newpos, keep)
+            
             if l>0:os.sys.stdout.write(" ")
             l+=1
-            os.sys.stdout.write("*"+finepos+"*")
+            os.sys.stdout.write(pos+finepos)
         os.sys.stdout.write("\n")
-        input()
+
            
                 
 
