@@ -318,7 +318,16 @@ if __name__=="__main__":
     
         source_right_lstm = GRU(90)
         source_left_lstm = GRU(90)
-    
+
+        # extra GRUs
+        extra_grus = []
+        extra_grus_t = []
+        for e in range(len(vs.extra)):
+            if extra_types[e]=="seq":
+                extra_grus_t.append(GRU(90))
+                extra_grus.append(GRU(90, return_sequences=True))
+        
+        # layer 
         left_source_lstm_out = source_left_lstm(vector_left_source)
         right_source_lstm_out = source_right_lstm(vector_right_source)
     
@@ -331,12 +340,13 @@ if __name__=="__main__":
         left_target_wordpos_lstm_out = left_lstm_wordpos(vector_left_target_wordpos)
         right_target_wordpos_lstm_out = right_lstm_wordpos(vector_right_target_wordpos)
 
-        # extra GRUs
-        extra_grus = []
+        # extra out
         extra_out = []
         for e in range(len(vs.extra)):
-            extra_grus.append(GRU(90, return_sequences=True))
-            extra_out.append(extra_grus[e](extra_vectors[e]))
+            if extra_types[e]=="seq":
+                extra_out.append(extra_grus_t[e](extra_out1[e]))
+        # TO DO - concatenate non sequential too!
+
     
         #A monster!
         merged_vector = concatenate([right_target_wordpos_lstm_out,
