@@ -4,7 +4,7 @@ import numpy as np
 
 # name, type, max size (NA when sequential)
 
-extra_inputs = [("s_morph_de", "seq", "NA")]
+extras = [("s_morph_de", "seq", "NA")]
 
 
 

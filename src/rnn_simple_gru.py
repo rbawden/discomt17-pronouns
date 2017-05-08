@@ -175,7 +175,8 @@ if __name__=="__main__":
     # extra inputs - will depend on sequential or not
     extra_inputs = []
     for e in range(len(vs.extra)):
-        extra_inputs.append(Input(shape = (window, ), name="extra_"+str(e), dtype='int32'))
+        if extra_types[e]=="seq": extra_inputs.append(Input(shape = (window, ), name=extra_names[e], dtype='int32'))
+        else: extra_inputs.append(Input(shape = (extra_sizes[e], ), name=extra_names[e], dtype='int32'))
 
     #---------------------------------------------------------------------------
     # Embeddings
@@ -206,7 +207,8 @@ if __name__=="__main__":
     extra_embeddings = []
     extra_vectors = []
     for e in range(len(vs.extra)):
-        extra_embeddings.append(Embedding(len(vs.extra[e]), vec_size, input_length=window, mask_zero=True))
+        if extra_types[e]=="seq": extra_embeddings.append(Embedding(len(vs.extra[e]), vec_size, input_length=window, mask_zero=True))
+        else: extra_embeddings.append(Embedding(len(vs.extra[e]), vec_size, input_length=extra_sizes[e], mask_zero=True))
         extra_vectors.append(extra_embeddings[e](extra_inputs[e]))
     
     
@@ -245,8 +247,9 @@ if __name__=="__main__":
         extra_grus = []
         extra_grus_t = []
         for e in range(len(vs.extra)):
-            extra_grus_t.append(GRU(90))
-            extra_grus.append(GRU(90, return_sequences=True))
+            if extra_types[e]=="seq":
+                extra_grus_t.append(GRU(90))
+                extra_grus.append(GRU(90, return_sequences=True))
     
         ##### Layer 1
     
@@ -265,7 +268,8 @@ if __name__=="__main__":
         # extra out1
         extra_out1 = []
         for e in range(len(vs.extra)):
-            extra_out1.append(extra_grus[e](extra_vectors[e]))
+            if extra_types[e]=="seq":
+                extra_out1.append(extra_grus[e](extra_vectors[e]))
     
         ##### Layer 2
     
@@ -284,8 +288,10 @@ if __name__=="__main__":
         # extra out
         extra_out = []
         for e in range(len(vs.extra)):
-            extra_out.append(extra_grus_t[e](extra_out1[e]))
-    
+            if extra_types[e]=="seq":
+                extra_out.append(extra_grus_t[e](extra_out1[e]))
+        # TO DO - concatenate non sequential too!
+                
         # A monster! + some extra little demons
         merged_vector = concatenate([right_target_wordpos_lstm_out,
                                left_target_wordpos_lstm_out,

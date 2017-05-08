@@ -4,16 +4,16 @@ import numpy as np
 import codecs
 import sys
 import pickle
-import os.path, os, sys
+import os.path, os, sys, gzip
 import random
 import argparse
 from config import *
 
 
 # shortcuts for extra feature info (imported from config)
-extra_names = [x[0] for x in extra_inputs]
-extra_types = [x[1] for x in extra_inputs]
-extra_sizes = [x[2] for x in extra_inputs]
+extra_names = [x[0] for x in extras]
+extra_types = [x[1] for x in extras]
+extra_sizes = [x[2] for x in extras]
 
 
 #-------------------------------------------------------------------------------
@@ -153,11 +153,11 @@ def read_vocabularies(training_fname,force_rebuild):
 
 
 def save_vocabularies(vs,f_name):
-    with open(f_name,"wb") as f:
+    with open(f_name, "wb") as f:
         pickle.dump(vs, f, 3)
 
 def load_vocabularies(f_name):
-    with open(f_name,"rb") as f:
+    with open(f_name, "rb") as f:
         return pickle.load(f)
 
 def wipe_matrices(ms):
@@ -382,7 +382,7 @@ def infinite_iter_data(f_name,max_rounds=None, max_items=None, shuffle=False):
     while True:
         yield_counter = 0
         # sys.stderr.write("next pass\n")
-        with open(f_name, "rt", encoding="utf-8") as f:
+        with gzip.open(f_name, "rt", encoding="utf-8") as f:
             documents=[]
 
             for doc_id, document in enumerate(document_iterator(f)):
