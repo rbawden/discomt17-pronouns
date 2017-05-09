@@ -108,6 +108,7 @@ if __name__=="__main__":
     argparser.add_argument("train", help="training data file")
     argparser.add_argument("dev", help="dev data file")
     argparser.add_argument("modelname", help="model name")
+    argparser.add_argument("epochs", type=int)
     argparser.add_argument("-s", "--stacked", action="store_true", default=False)
     argparser.add_argument("-f", "--force_rebuild", action="store_true", default=False)
     args = argparser.parse_args()
@@ -386,7 +387,7 @@ if __name__=="__main__":
     
     model.fit_generator(fill_batch(train_ms, vs, raw_train_data),
                         steps_per_epoch = training_data_size,
-                        epochs = 50,
+                        epochs = args.epochs,
                         callbacks = [evalcb, savecb])
     
     
